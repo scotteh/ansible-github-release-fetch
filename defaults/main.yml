@@ -1,0 +1,10 @@
+---
+
+github_release_base_url: https://api.github.com/repos/
+github_release_repositories: []
+#  - version: latest
+#    repository: example/example
+#    match: \.tar.gz$
+#    dest: /tmp/
+
+github_releases: []

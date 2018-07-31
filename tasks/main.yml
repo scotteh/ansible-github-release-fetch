@@ -1,0 +1,22 @@
+---
+
+- name: 'github | release details'
+  uri:
+    url: "{{ github_release_base_url }}{{ item.repository }}/releases/{{ item.version|default('latest') }}"
+    body_format: 'json'
+  with_items: '{{ github_release_repositories }}'
+  when: item.repository is defined
+  register: _github_details_json
+
+- set_fact:
+    github_releases: "{{ { 'file': item.1.browser_download_url, 'item': item.0.item } }}"
+  with_subelements:
+    - '{{ _github_details_json.results }}'
+    - json.assets
+  when: item.0.status == '200' and (item.0.match is not defined or item.1.browser_download_url is search(item.0.match))
+
+- get_url:
+    url: "{{ item.file }}"
+    dest: "{{ item.item.dest }}"
+  with_items: "{{ github_releases }}"
+  when: github_releases is defined and item.item.dest is defined
