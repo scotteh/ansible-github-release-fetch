@@ -6,5 +6,3 @@ github_release_repositories: []
 #    repository: example/example
 #    match: \.tar.gz$
 #    dest: /tmp/
-
-github_releases: []

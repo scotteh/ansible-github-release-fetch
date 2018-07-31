@@ -9,14 +9,14 @@
   register: _github_details_json
 
 - set_fact:
-    github_releases: "{{ { 'file': item.1.browser_download_url, 'item': item.0.item } }}"
+    github_releases: "{{ github_releases|default([]) + [{ 'file': item.1.browser_download_url, 'item': item.0.item }] }}"
   with_subelements:
     - '{{ _github_details_json.results }}'
     - json.assets
-  when: item.0.status == '200' and (item.0.match is not defined or item.1.browser_download_url is search(item.0.match))
+  when: item.0.status == 200 and (item.0.match is not defined or item.1.browser_download_url is search(item.0.match))
 
 - get_url:
     url: "{{ item.file }}"
     dest: "{{ item.item.dest }}"
-  with_items: "{{ github_releases }}"
-  when: github_releases is defined and item.item.dest is defined
+  with_items: "{{ github_releases|default([]) }}"
+  when: item.item.dest is defined
